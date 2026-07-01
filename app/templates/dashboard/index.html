@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Your Dashboard</h2>
+
+<div class="summary">
+    <div class="summary-card">
+        <span>Total Spent</span>
+        <strong>₹{{ "%.2f"|format(total_spent) }}</strong>
+    </div>
+    <div class="summary-card">
+        <span>Total Transactions</span>
+        <strong>{{ total_transactions }}</strong>
+    </div>
+</div>
+
+<a href="{{ url_for('expenses.add_expense') }}">+ Add New Expense</a>
+
+<h3>Recent Expenses</h3>
+
+{% if expenses %}
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ expense.date.strftime('%d %b %Y') }}</td>
+            <td>{{ expense.description or '—' }}</td>
+            <td>{{ expense.category.name if expense.category else 'Uncategorized' }}</td>
+            <td>₹{{ "%.2f"|format(expense.amount) }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('expenses.delete_expense', expense_id=expense.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" onclick="return confirm('Delete this expense?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No expenses yet. Add your first one!</p>
+{% endif %}
+{% endblock %}
