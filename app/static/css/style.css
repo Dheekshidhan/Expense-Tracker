@@ -189,3 +189,16 @@ table button {
 table button:hover {
     background: #dc2626;
 }
+.chart-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+}
+
+.chart-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
