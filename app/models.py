@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_login import UserMixin
 from app.extensions import db, login_manager
 
@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(60), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(128), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Relationships: Links the user to their expenses
     expenses = db.relationship('Expense', backref='author', lazy=True, cascade="all, delete-orphan")
@@ -44,7 +44,7 @@ class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(200), nullable=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
+    date = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
 
     # Foreign Keys: Connecting this expense to a specific User and Category
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
